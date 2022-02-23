@@ -115,7 +115,7 @@
 </string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="nav_btn">
     <property name="geometry">
      <rect>
       <x>819</x>
@@ -131,7 +131,7 @@
      <string>Next &gt;</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="t_label">
     <property name="geometry">
      <rect>
       <x>180</x>
@@ -200,7 +200,7 @@
      <string>TextLabel</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QLabel" name="d_label">
     <property name="geometry">
      <rect>
       <x>180</x>
@@ -257,15 +257,66 @@
      <string>Record Screen Input</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="start_btn">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>190</y>
+      <width>611</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string>START CAPTURE</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pause_btn">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>260</y>
+      <width>611</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string>PAUSE CAPTURE </string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="stop_btn">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>330</y>
+      <width>611</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string>STOP CAPTURE</string>
+    </property>
+   </widget>
    <zorder>display_screen</zorder>
-   <zorder>label_2</zorder>
+   <zorder>d_label</zorder>
    <zorder>checkBox_3</zorder>
    <zorder>checkBox_2</zorder>
    <zorder>checkBox</zorder>
-   <zorder>pushButton</zorder>
-   <zorder>label</zorder>
+   <zorder>nav_btn</zorder>
+   <zorder>t_label</zorder>
    <zorder>lineEdit</zorder>
    <zorder>label_3</zorder>
+   <zorder>start_btn</zorder>
+   <zorder>pause_btn</zorder>
+   <zorder>stop_btn</zorder>
   </widget>
  </widget>
  <resources/>

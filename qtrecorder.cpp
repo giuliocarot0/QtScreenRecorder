@@ -16,16 +16,23 @@ QtRecorder::QtRecorder(QWidget *parent)
     , crop(false)
 {
     ui->setupUi(this);
-    w_title = this->findChild<QLabel *>("label");
-    w_description = this->findChild<QLabel *>("label_2");
+    w_title = this->findChild<QLabel *>("t_label");
+    w_description = this->findChild<QLabel *>("d_label");
     video_check = this->findChild<QCheckBox *>("checkBox");
     audio_check = this->findChild<QCheckBox *>("checkBox_2");
     crop_check = this->findChild<QCheckBox *>("checkBox_3");
-    next_button = this->findChild<QPushButton *>("pushButton");
+    next_button = this->findChild<QPushButton *>("nav_btn");
+    start_button = this->findChild<QPushButton *>("start_btn");
+    pause_button = this->findChild<QPushButton *>("pause_btn");
+    stop_button = this->findChild<QPushButton *>("stop_btn");
+
     screenshot_label = this->findChild<QLabel *>("display_screen");
     filename_label = this->findChild<QLabel *>("label_3");
     filename_box = this->findChild<QLineEdit *>("lineEdit");
     screenshot_label->hide();
+    start_button->hide();
+    pause_button ->hide();
+    stop_button ->hide();
     video_check->hide();
     audio_check->hide();
     crop_check->hide();
@@ -40,18 +47,28 @@ void QtRecorder::startWizard(){
     w_title->show();
     w_description->show();
     next_button->show();
+    next_button->setText("Next >");
+
     if((rec_audio || rec_video) && filename_box->text() != "") next_button->setEnabled(true);
     else next_button->setEnabled(false);   w_title->setText("Quick Settings");
-   w_description->setText("These few options will allow you to customize your recording session in a very simple way!");
-   video_check->show();
+     w_description->setText("These few options will allow you to customize your recording session in a very simple way!");
+     video_check->show();
    audio_check->show();
    crop_check->show();
+   start_button->hide();
+   pause_button ->hide();
+   stop_button ->hide();
    filename_label->show();
    filename_box->show();
+   if(crop) crop_check->setText(crop_check->text() + " "+ QString::number(size_x) + ":" + QString::number(size_x) + "+(offset)" +  QString::number(off_x) + ":" + QString::number(off_y));
+   screenshot_label->hide();
+   if(rubberband!=nullptr) rubberband->hide();
+   video_check->setChecked(rec_video);
+   audio_check->setChecked(rec_audio);
+   crop_check->setChecked(crop);
+   filename_box->setText(filename);
+   w_state = 1;
 }
-
-
-
 
 void QtRecorder::mousePressEvent(QMouseEvent *event){
     if(w_state != 2) return;
@@ -103,7 +120,6 @@ void QtRecorder::mouseMoveEvent(QMouseEvent *event)
 void QtRecorder::mouseReleaseEvent(QMouseEvent *event)
 {
     if(w_state!=2 || rubberband == nullptr) return;
-    QSize crop_size = rubberband->size();
 
     //compute the relative size
     size_x = (qreal)rubberband->width() / screenshot_label->width();
@@ -112,7 +128,7 @@ void QtRecorder::mouseReleaseEvent(QMouseEvent *event)
     //compute the relative offset
     off_x = 1 - rubberband->pos().x()/(qreal)screenshot_label->pos().x();
     off_y = 1 - rubberband->pos().y()/(qreal)screenshot_label->pos().y();
-    end_crop_procedure();
+    startWizard();
     // determine selection, for example using QRect::intersects()
     // and QRect::contains().
 }
@@ -122,18 +138,37 @@ QtRecorder::~QtRecorder()
     delete ui;
 }
 
+void QtRecorder::ready_to_record(){
+    //set ready to record state
+    w_state = 3;
+    //reuse next_button to go back to settings
+    next_button->setText("< Back");
+    w_title->setText("Ready to record!");
+    w_description->setText("Please use the following buttons to control the screen capture");
+    video_check->hide();
+    audio_check->hide();
+    crop_check->hide();
+    filename_label->hide();
+    filename_box->hide();
+    start_button->show();
+    pause_button->show();
+    stop_button->show();
+}
 
-
-void QtRecorder::on_pushButton_clicked()
+void QtRecorder::on_nav_btn_clicked()
 {
  switch(w_state){
     case 0:
-     next_button->setEnabled(true);
-     startWizard();
-     w_state = 1 ;
+        startWizard();
      break;
-    case 4:
-         break;
+    case 1:
+        //if button clickable, then settings have been validated => no need for validation here
+        ready_to_record();
+     break;
+     case 3:
+        //start wizard again;
+        startWizard();
+     break;
     default:
      return;
  }
@@ -159,11 +194,9 @@ void QtRecorder::crop_procedure(){
     screenshot_label->setAlignment(Qt::AlignCenter);
     screen = this->screen();
     last_size = this->size();
-    this->hide();
     //this->showMinimized();
     qpx_pixmap = screen->grabWindow(0);
     this->setWindowTitle("QtRecorder - select which area to capture");
-    this->show();
 
     screenshot_label->setFixedSize(this->size()*0.95);
     screenshot_label->setPixmap(qpx_pixmap.scaled(screenshot_label->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
@@ -191,18 +224,6 @@ void QtRecorder::on_checkBox_stateChanged(int arg1)
 
 }
 
-void QtRecorder::end_crop_procedure(){
-    startWizard();
-    if(crop) crop_check->setText(crop_check->text() + " "+ QString::number(size_x) + ":" + QString::number(size_x) + "+(offset)" +  QString::number(off_x) + ":" + QString::number(off_y));
-    screenshot_label->hide();
-    rubberband->hide();
-    video_check->setChecked(rec_video);
-    audio_check->setChecked(rec_audio);
-    crop_check->setChecked(crop);
-    filename_box->setText(filename);
-    w_state = 3;
-}
-
 void QtRecorder::on_checkBox_2_stateChanged(int arg1)
 {
     if(arg1 == 0){ //disabled
@@ -214,7 +235,6 @@ void QtRecorder::on_checkBox_2_stateChanged(int arg1)
     if((rec_audio || rec_video) && filename_box->text() != "") next_button->setEnabled(true);
     else next_button->setEnabled(false);
 }
-
 
 void QtRecorder::on_checkBox_3_stateChanged(int arg1)
 {
@@ -228,7 +248,6 @@ void QtRecorder::on_checkBox_3_stateChanged(int arg1)
     }
 }
 
-
 void QtRecorder::on_lineEdit_textChanged(const QString &arg1)
 {
     QString fil = arg1;
@@ -241,4 +260,5 @@ void QtRecorder::on_lineEdit_textChanged(const QString &arg1)
     }
     else next_button->setEnabled(false);
 }
+
 

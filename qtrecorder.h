@@ -30,7 +30,6 @@ public:
 
 
 private slots:
-    void on_pushButton_clicked();
     void on_checkBox_stateChanged(int arg1);
 
     void on_checkBox_2_stateChanged(int arg1);
@@ -38,6 +37,8 @@ private slots:
     void on_checkBox_3_stateChanged(int arg1);
 
     void on_lineEdit_textChanged(const QString &arg1);
+
+    void on_nav_btn_clicked();
 
 private:
     QLabel *filename_label;
@@ -49,13 +50,14 @@ private:
     QCheckBox *video_check;
     QCheckBox *crop_check;
     QPoint origin;
-    QPushButton *next_button;
+    QPushButton *next_button, *start_button, *pause_button, *stop_button;
     QRubberBand *rubberband;
     Ui::QtRecorder *ui;
     void closeWelcomePage();
     void startWizard();
     void crop_procedure();
     void end_crop_procedure();
+    void ready_to_record();
     int w_state; //should be 0 for welcome, 1 for settings, 2 for cropping
     qreal size_x;
     qreal size_y;
