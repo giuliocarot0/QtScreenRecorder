@@ -206,7 +206,7 @@
       <x>180</x>
       <y>140</y>
       <width>591</width>
-      <height>19</height>
+      <height>16</height>
      </rect>
     </property>
     <property name="font">
@@ -215,7 +215,7 @@
      </font>
     </property>
     <property name="text">
-     <string>In the next steps, the application will guide to set everything up to record your screen!</string>
+     <string>In the next steps, the application will guide you to set everything up!</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="checkBox_3">

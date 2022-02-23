@@ -39,7 +39,9 @@ void QtRecorder::startWizard(){
     this->setWindowTitle("QtRecorder - capture settings");
     w_title->show();
     w_description->show();
-   w_title->setText("Quick Settings");
+    next_button->show();
+    if((rec_audio || rec_video) && filename_box->text() != "") next_button->setEnabled(true);
+    else next_button->setEnabled(false);   w_title->setText("Quick Settings");
    w_description->setText("These few options will allow you to customize your recording session in a very simple way!");
    video_check->show();
    audio_check->show();
@@ -110,9 +112,6 @@ void QtRecorder::mouseReleaseEvent(QMouseEvent *event)
     //compute the relative offset
     off_x = 1 - rubberband->pos().x()/(qreal)screenshot_label->pos().x();
     off_y = 1 - rubberband->pos().y()/(qreal)screenshot_label->pos().y();
-
-
-    w_state = 3;
     end_crop_procedure();
     // determine selection, for example using QRect::intersects()
     // and QRect::contains().
@@ -187,7 +186,7 @@ void QtRecorder::on_checkBox_stateChanged(int arg1)
         crop_check->setEnabled(true);
         rec_video = true;
     }
-    if(rec_audio || rec_video) next_button->setEnabled(true);
+    if((rec_audio || rec_video) && filename_box->text() != "") next_button->setEnabled(true);
     else next_button->setEnabled(false);
 
 }
@@ -200,8 +199,8 @@ void QtRecorder::end_crop_procedure(){
     video_check->setChecked(rec_video);
     audio_check->setChecked(rec_audio);
     crop_check->setChecked(crop);
-
-
+    filename_box->setText(filename);
+    w_state = 3;
 }
 
 void QtRecorder::on_checkBox_2_stateChanged(int arg1)
@@ -212,7 +211,7 @@ void QtRecorder::on_checkBox_2_stateChanged(int arg1)
     else{
         rec_audio = true;
     }
-    if(rec_audio || rec_video) next_button->setEnabled(true);
+    if((rec_audio || rec_video) && filename_box->text() != "") next_button->setEnabled(true);
     else next_button->setEnabled(false);
 }
 
@@ -227,5 +226,19 @@ void QtRecorder::on_checkBox_3_stateChanged(int arg1)
         crop = true;
         crop_procedure();
     }
+}
+
+
+void QtRecorder::on_lineEdit_textChanged(const QString &arg1)
+{
+    QString fil = arg1;
+    fil.replace(" ", "_");
+    filename_box->setText(fil);
+    filename = fil;
+
+    if((rec_audio || rec_video) && arg1!= ""){
+        next_button->setEnabled(true);
+    }
+    else next_button->setEnabled(false);
 }
 

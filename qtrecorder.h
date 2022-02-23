@@ -37,6 +37,8 @@ private slots:
 
     void on_checkBox_3_stateChanged(int arg1);
 
+    void on_lineEdit_textChanged(const QString &arg1);
+
 private:
     QLabel *filename_label;
     QLabel *w_title;
